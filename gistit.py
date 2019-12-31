@@ -98,6 +98,9 @@ def make_parser():
 def main():
     parser = make_parser()
     args = parser.parse_args()
+    if args.command is None:
+        parser.print_help()
+        sys.exit(1)
     command = args.func
     sys.exit(command(args))
 
