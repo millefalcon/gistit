@@ -320,7 +320,7 @@ class ReadmeUsageTestCase(unittest.TestCase):
 
         cmd_args = [sys.executable, 'gistit.py']
         cmd_args.extend(args)
-        output_lines = subprocess.check_output(cmd_args).decode('utf-8').splitlines()
+        output_lines = subprocess.check_output(cmd_args).splitlines()
         output_lines = [line.rstrip() for line in output_lines]
         indented_output_lines = []
         for line in output_lines:
@@ -342,12 +342,14 @@ class ReadmeUsageTestCase(unittest.TestCase):
 class SimpleRun(unittest.TestCase):
     def setUp(self):
         cmd_args = [sys.executable, 'gistit.py', '--help']
-        args = make_parser().parse_args([])
-        self.help_output_lines = subprocess.check_output(cmd_args).decode('utf-8').splitlines()
+        self.help_output_lines = subprocess.Popen(
+            cmd_args,
+            stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
 
     def test_no_args(self):
         cmd_args = [sys.executable, 'gistit.py']
-        args = make_parser().parse_args([])
-        self.test_output_lines = subprocess.check_output(cmd_args).decode('utf-8').splitlines()
+        self.test_output_lines = subprocess.Popen(
+            cmd_args,
+            stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
         self.assertTrue(self.help_output_lines == self.test_output_lines)
 
