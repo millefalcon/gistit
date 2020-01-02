@@ -360,10 +360,10 @@ class SimpleRun(unittest.TestCase):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
         test_stdout, test_stderr = proc.communicate()
-        test_output_line = ''
         # using `stdout`/`stderr` because in `python2` the default help is raised
         # by the parser, and it is written to `stderr`, while in `python3` we
         # are using the parser to print help explicitly and it being written to stdout
+        test_output_line = ''
         if test_stdout:
             test_output_line = test_stdout.decode('utf-8').splitlines()[0]
         else:
