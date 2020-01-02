@@ -100,7 +100,7 @@ def main():
     args = parser.parse_args()
     if args.command is None:
         parser.print_help()
-        sys.exit(1)
+        parser.exit(1)
     command = args.func
     sys.exit(command(args))
 
@@ -358,5 +358,5 @@ class SimpleRun(unittest.TestCase):
         self.test_output_lines = subprocess.Popen(
             cmd_args,
             stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
-        self.assertTrue(self.help_output_lines == self.test_output_lines)
+        self.assertEqual(self.help_output_lines, self.test_output_lines)
 
