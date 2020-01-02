@@ -100,7 +100,7 @@ def main():
     args = parser.parse_args()
     if args.command is None:
         parser.print_help()
-        parser.exit(1)
+        parser.exit(2)
     command = args.func
     sys.exit(command(args))
 
@@ -351,12 +351,23 @@ class SimpleRun(unittest.TestCase):
         cmd_args = [sys.executable, 'gistit.py', '--help']
         self.help_output_lines = subprocess.Popen(
             cmd_args,
-            stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
+            stdout=subprocess.PIPE).communicate()[0].decode('utf-8').splitlines()[0]
 
     def test_no_args(self):
         cmd_args = [sys.executable, 'gistit.py']
-        self.test_output_lines = subprocess.Popen(
+        proc = subprocess.Popen(
             cmd_args,
-            stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
-        self.assertEqual(self.help_output_lines, self.test_output_lines)
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
+        test_stdout, test_stderr = proc.communicate()
+        test_output_line = ''
+        # using `stdout`/`stderr` because in `python2` the default help is raised
+        # by the parser, and it is written to `stderr`, while in `python3` we
+        # are using the parser to print help explicitly and it being written to stdout
+        if test_stdout:
+            test_output_line = test_stdout.decode('utf-8').splitlines()[0]
+        else:
+            test_output_line = test_stderr.decode('utf-8').splitlines()[0]
+        self.assertEqual(proc.returncode, 2)
+        self.assertEqual(test_output_line, self.help_output_lines)
 
